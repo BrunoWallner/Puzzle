@@ -96,7 +96,7 @@ namespace ScannenServer
             Mat black = scan(scannerItem);
             dis.Invoke(new Action(() =>
             {
-                MessageBox.Show("Licht AUS!", "Licht AUS!", MessageBoxButton.OK);
+                MessageBox.Show("Licht EIN!", "Licht EIN!", MessageBoxButton.OK);
             }));
 
             //if (MessageBox.Show("Licht EIN!", "Licht EIN!", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return null;
