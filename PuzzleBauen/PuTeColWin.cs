@@ -87,8 +87,8 @@ namespace PuzzleBauen
             overlayColor.Value = color.green;
             contourColor.Value = color.blue;
             
-            minSize.val = 1000;
-            maxSize.val = 100000;
+            minSize.val = 10000;
+            maxSize.val = 80000;
             sizePlus.val = 20;
             threshold.val = 180;
             erode.val = 0;
