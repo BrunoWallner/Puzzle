@@ -1,0 +1,12 @@
+#imageControl {
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas {
+  outline: black 3px solid;
+}
+
+button {
+  height: 100px;
+}
