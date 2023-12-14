@@ -38,21 +38,36 @@ namespace PuzzleBauen
                 FileStream fs = new FileStream(PathProvider.getScanCollectionFile(), FileMode.Open);
                 instance = PuzzleScanCollection.load(fs);
                 fs.Close();
+                instance.nextScanIndex = instance.scans.Count + 1;
             }
             return instance;
         }
         List<PuzzleScan> scans = new List<PuzzleScan>();
         public List<PuzzleScan> getScans() { return scans; }
+        int nextScanIndex = 1;
         public int addScan(PuzzleScan scan)
         {
             alleTeile = null;
+            scan.id = nextScanIndex;// scans.Count + 1;
+            nextScanIndex++;
             scans.Add(scan);
-            scan.id = scans.Count;
             return scan.id;
+        }
+
+        public void removeScan(PuzzleScan scan)
+        {
+            alleTeile = null;
+            //scan.id = counter;// scans.Count + 1;
+            //counter++;
+            //scans.Add(scan);
+            //return scan.id;
+            scans.Remove(scan);
+
+            
         }
         public PuzzleScanCollection()
         {
-
+            nextScanIndex = 1;
         }
         List<PuzzleTeil> alleTeile = null;
         public List<int> getAllIDs()

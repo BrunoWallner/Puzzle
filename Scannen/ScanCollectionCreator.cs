@@ -66,6 +66,11 @@ namespace ScannenServer
             loadButton.FontSize = 20;
             sp.Children.Add(loadButton);
             //sp.Children.Add(new AutoActionButton("Neu", neu));
+
+
+            AutoActionButton del = new AutoActionButton("Delete", dewl);
+            del.FontSize = 20;
+            sp.Children.Add(del);
             AutoActionButton findEckButton = new AutoActionButton("FindEck", findEck);
             findEckButton.FontSize = 20;
             sp.Children.Add(findEckButton);
@@ -83,6 +88,21 @@ namespace ScannenServer
             //server.neuerScan += Server_neuerScan;
             //server.start();
             this.Closing += ScanCollectionCreator_Closing;
+        }
+        void dewl()
+        {
+            PuzzleScan pus = (scans.list.SelectedItem as PuzzleScan);
+            if(pus == null)
+            {
+                MessageBox.Show("nix gewählt");
+                return;
+            }
+            if(MessageBox.Show("Wirklich", "wirklich", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                target.removeScan(pus);
+                refresh();
+            }
+
         }
         void startScan()
         {
@@ -193,6 +213,7 @@ namespace ScannenServer
             teile.list.Items.Clear();
             if(selectedScan != null)
             {
+                this.Title = "Scan Number " + selectedScan.id.ToString();
                 foreach (PuzzleTeil p in selectedScan.teile)
                 {
                     teile.list.Items.Add(p);

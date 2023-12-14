@@ -115,6 +115,7 @@ namespace PuzzleBauen
                 //knubbelStart = cl.points[0].next.next.next;
             }
             xPoint knubbelRun = knubbelStart.next;
+            if (knubbelRun == null) return null;
             int count1 = 0;
             while (knubbelRun != knubbelStart)
             {
