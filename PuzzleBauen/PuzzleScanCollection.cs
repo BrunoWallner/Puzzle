@@ -57,6 +57,11 @@ namespace PuzzleBauen
         public void removeScan(PuzzleScan scan)
         {
             alleTeile = null;
+            // check if deleted scan is the last one and one in between
+            if (scan.id == nextScanIndex - 1)
+            {
+                nextScanIndex--;
+            }
             //scan.id = counter;// scans.Count + 1;
             //counter++;
             //scans.Add(scan);
