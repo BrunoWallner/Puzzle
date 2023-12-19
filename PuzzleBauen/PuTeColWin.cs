@@ -156,7 +156,7 @@ namespace PuzzleBauen
 
         void ok()
         {
-            if(MessageBox.Show("Wirklich in Ordnding?", "OK?",MessageBoxButton.YesNo) == MessageBoxResult.No) return;            
+            if(MessageBox.Show("Wirklich in Ordnung?", "OK?",MessageBoxButton.YesNo) == MessageBoxResult.No) return;            
             //try
             //{
                 this.DialogResult = true;
