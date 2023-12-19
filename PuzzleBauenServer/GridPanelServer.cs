@@ -85,7 +85,7 @@ namespace PuzzleBauenServer
             showAll.IsChecked = true;
             showAll.Checked += ShowAll_Checked;
             showAll.Unchecked += ShowAll_Unchecked;
-            sp.Children.Add(showAll);
+            //sp.Children.Add(showAll);
 
 
 

@@ -160,14 +160,14 @@ namespace PuzzleBauen
 
         public Mat getBild(bool all)
         {
-            if (all)
-            {
-                if (completeTeilBild == null) createcompleteTeilBild();
-                Mat ret = new Mat();
-                completeTeilBild.CopyTo(ret);
-                return ret;
-            }
-            else
+            //if (all)
+            //{
+            //    if (completeTeilBild == null) createcompleteTeilBild();
+            //    Mat ret = new Mat();
+            //    completeTeilBild.CopyTo(ret);
+            //    return ret;
+            //}
+            //else
             {
                 if (partialTeilBild == null) createPartialTeilBild();
                 Mat ret = new Mat();

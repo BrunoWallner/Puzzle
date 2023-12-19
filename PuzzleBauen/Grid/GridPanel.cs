@@ -141,7 +141,7 @@ namespace PuzzleBauen
             showAll.IsChecked = true;
             showAll.Checked += ShowAll_Checked;
             showAll.Unchecked += ShowAll_Unchecked;
-            sp.Children.Add(showAll);
+            //sp.Children.Add(showAll);
             //this.KeyDown += keyDown;
             setGrid(grid);
             SelectedCell = new Point(1, 1);
