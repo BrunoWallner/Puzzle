@@ -44,6 +44,7 @@ namespace PuzzleBauenClient
         public event EventHandler auftragEvent;        
         public List<Auftrag> aufträge = new List<Auftrag>();
         public List<(int, int, OrientiertesTeil, string)> TeilQueue = new List<(int, int, OrientiertesTeil, string)>();
+        string loggedInUser = "";
 
 
         void onInsertEvent(int x, int y, OrientiertesTeil ot)
@@ -98,7 +99,7 @@ namespace PuzzleBauenClient
                 auftrag.getScanBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_0" + ".png");
                 auftrag.getPuzzleBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_1" + ".png");
                 //listener.SendAll("send_meta:" + auftrag.X.ToString() + ":" + auftrag.Y.ToString() + ":" + auftrag.Teil.TeilNummer.ToString() + ":" + auftrag.Teil.PuzzleTeil.scan.id);
-                listener.SendAll("assign:" + uuid);
+                listener.SendAll("assign:" + uuid + ":" + auftrag.Teil.PuzzleTeil.scan.id);
             }
 
         }
@@ -159,24 +160,45 @@ namespace PuzzleBauenClient
                 return "error:InvalidInput";
             }
             string uid = tokens[0];
+            bool valid_user = uid == this.loggedInUser;
             string request = tokens[1];
             string output = "";
+
+            // check if user is still reachable
+            if (!valid_user)
+            {
+                if (!listener.stillConnected(this.loggedInUser))
+                {
+                    this.loggedInUser = "";
+                    this.aufträge.Clear();
+                    this.TeilQueue.Clear();
+                }
+            }
+
             switch (request)
             {
-                case "login":
-                    onLog("wsHook-login, sockets " + listener.sockets.Count.ToString());
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                case "logoff":
+                    if (valid_user)
                     {
-                        //loginCallback(); 
-                    }));                    
+                        this.loggedInUser = "";
+                    }
                     break;
-                case "request_image":
-                    onLog("wsHook-imageRequest");
-                    output += "load_image:";
-                    string file_name = "/example.png";
-                    output += file_name;
+                case "login":
+                    if (this.loggedInUser == "")
+                    {
+                        onLog("wsHook-login, sockets " + listener.sockets.Count.ToString());
+                        this.loggedInUser = uid;
+                    } else
+                    {
+                        output += "invalid_user";
+                    }                
                     break;
                 case "success":
+                    if (!valid_user)
+                    {
+                        output += "invalid_user";
+                        break;
+                    }
                     onLog("wsHook-success");
                     {
                         Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -186,6 +208,11 @@ namespace PuzzleBauenClient
                     }
                     break;
                 case "fail":
+                    if (!valid_user)
+                    {
+                        output += "invalid_user";
+                        break;
+                    }
                     onLog("wsHook-fail");
                     {
                         failCallback();
@@ -196,6 +223,8 @@ namespace PuzzleBauenClient
                     onLog("wsHook-unbekannt: " + msg);
                     break;
             }
+
+
             return output;
         }
     } 

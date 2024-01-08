@@ -43,9 +43,12 @@ function load_next() {
   }
 
   let order = Orders.shift();
-  let uuid = order;
+  let uuid = order[0];
+  let scan_id = order[1];
   let image0 = "/" + uuid + "_0" + ".png";
   let image1 = "/" + uuid + "_1" + ".png";
+
+  document.getElementById("scan").innerText = "SCAN: " + scan_id;
 
   // load and draw image 0
   var img0 = new Image();
@@ -64,5 +67,4 @@ function load_next() {
     ctx1.drawImage(img1, 0, 0);
   }
   img1.src = "http://" + HOST_ADDRESS + image1;
-  
 }

@@ -67,6 +67,7 @@ namespace PuzzleBauenClient
             PuzzleScanCollection col = PuzzleScanCollection.getInstance();
             PuzzleTeil pt = col.getTeil(teil.TeilNummer);
             Mat ret = new Mat(pt.scan.Image.Rows, pt.scan.Image.Cols, MatType.CV_8UC3, Scalar.White);
+
             foreach (int i in TeilManager.getInstance().getVerfügbareTeile())
             {
                 PuzzleTeil otherTeil = col.getTeil(i);
@@ -79,9 +80,15 @@ namespace PuzzleBauenClient
             Point offset = pt.boundingRect.TopLeft;
             for (int i = 0; i < cont.Length - 1; i++)
             {
-                Cv2.Line(ret, cont[i] + offset, cont[i + 1] + offset, Scalar.Red, 5);
+                Cv2.Line(ret, cont[i] + offset, cont[i + 1] + offset, Scalar.Red, 15);
             }
-            return ret;
+
+            int width = ret.Width;
+            int height = ret.Height;
+            Mat ret_small = new Mat();
+            Cv2.Resize(ret, ret_small, new OpenCvSharp.Size(width / 4, height / 4));
+
+            return ret_small;
         }
         public Mat getPuzzleBild()
         {

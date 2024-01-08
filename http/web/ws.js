@@ -24,15 +24,25 @@ socket.addEventListener("message", (event) => {
   let request = tokens[0];
   switch(request) {
     case "assign":
-      if (tokens.length != 2) {return};
+      if (tokens.length != 3) {return};
       let uuid = tokens[1];
-      Orders.push(uuid);
+      let scan_id = tokens[2];
+      Orders.push([uuid, scan_id]);
       if (NO_NEW_ORDER) {
         load_next();
       }
 	    break;
+    case "invalid_user":
+      document.body.style.display = 'none';
+      alert("Another user already logged in");
+      socket.close();
+      break;
   }
 })
+
+function logoff() {
+  socket.send(UID + ":" + "logoff");
+}
 
 function success() {
     socket.send(UID + ":" + "success");

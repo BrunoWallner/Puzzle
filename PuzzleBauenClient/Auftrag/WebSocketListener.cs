@@ -10,6 +10,8 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 
 using PuzzleBauen;
+using System.Linq;
+
 namespace PuzzleBauenClient
 {
     public class WebSocketListener
@@ -65,6 +67,20 @@ namespace PuzzleBauenClient
                         socket.Send(response);
                     }
                 };
+                socket.OnClose = () =>
+                {
+                    string uidToRemove = null;
+                    foreach (KeyValuePair<string, Fleck.IWebSocketConnection> kvp in sockets)
+                    {
+                        if (kvp.Value == socket) {
+                            uidToRemove = kvp.Key;
+                        }
+                    }
+                    if (uidToRemove != null)
+                    {
+                        sockets.Remove(uidToRemove);
+                    }
+                };
             });
         }
         public void SendAll(string msg)
@@ -76,6 +92,11 @@ namespace PuzzleBauenClient
                     socket.Send(msg);
                 }
             }
+        }
+
+        public bool stillConnected(string uid)
+        {
+            return this.sockets.ContainsKey(uid);
         }
     }
 }

@@ -10,6 +10,7 @@ html, body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 #imageControl {
@@ -36,39 +37,40 @@ html, body {
   width: 50%;
 }
 
-#images {
-  flex: 1;
-  overflow-y: scroll;
-}
-
 #success {
-  background-color: #339926;
+  background-color: #2f5c2d;
 }
 #success:active {
   background-color: grey;
 }
 
 #fail {
-  background-color: #e53232;
+  background-color: #912727;
 }
 #fail:active {
   background-color: grey;
 }
 
-#next {
-  background-color: #2fa4c4
+#images {
+  display: flex;
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: scroll;
 }
 
 .canvas {
   outline: none;
-  width: 100%;
+  object-fit: contain;
+}
+
+#c0 {
+  flex: 1;
+}
+#c1 {
+  flex: 1;
 }
 
 button {
   font-size: 26px;
   height: 100px;
 }
-
-// button:active {
-//   background-color: white;
-// }
