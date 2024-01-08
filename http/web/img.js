@@ -6,31 +6,15 @@ const ctx1 = c1.getContext("2d");
 
 let NO_NEW_ORDER = true;
 
-// function load_image_1(src) {
-
-
-
-//   console.log("loading image 1");
-//   var img = new Image();
-//   img.onload = function() {
-//     c1.width = img.width;
-//     c1.height = img.height;
-//     ctx1.drawImage(img, 0, 0);
-//   }
-
-//   img.src = "http://" + HOST_ADDRESS + src;
-// }
-
-
-// function load_image_2(src) {
-//   var img = new Image();
-//   img.onload = function() {
-//     c2.width = img.width;
-//     c2.height = img.height;
-//     ctx2.drawImage(img, 0, 0);
-//   }
-//   img.src = "http://" + HOST_ADDRESS + src;
-// }
+function switch_image() {
+  if (c0.style.display === 'none') {
+    c1.style.display = "none";
+    c0.style.display = "block";
+  } else {
+    c1.style.display = "block";
+    c0.style.display = "none";
+  }
+}
 
 function load_next() {
   if (Orders.length == 0) {
