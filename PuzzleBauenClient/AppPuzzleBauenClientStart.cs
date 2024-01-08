@@ -23,9 +23,9 @@ namespace PuzzleBauenClient
         public static void Main()
         {
             DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-            //string localRoot = currentDirectory.Parent.Parent.Parent.Parent.ToString();
+            string localRoot = currentDirectory.Parent.Parent.Parent.Parent.ToString();
             //PathProvider.localPath = localRoot + "\\Daten\\client\\";
-            //PathProvider.httpPath = localRoot + "\\http";
+            PathProvider.httpPath = localRoot + "\\http";
 
             //Directory.SetCurrentDirectory(PathProvider.httpPath);
             //ProcessStartInfo psi = new ProcessStartInfo();

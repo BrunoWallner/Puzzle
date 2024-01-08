@@ -20,8 +20,8 @@ namespace PuzzleBauen
             DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
             string localRoot = currentDirectory.Parent.Parent.Parent.Parent.ToString();
 
-            PathProvider.localPath = localRoot + "\\Daten\\server\\";
-            PathProvider.httpPath = localRoot + "\\http";
+            //PathProvider.localPath = localRoot + "\\Daten\\server\\";
+            //PathProvider.httpPath = localRoot + "\\http";
 
             
             

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,6 +43,7 @@ namespace PuzzleBauenClient
         public event EventHandler<String> logEvent;
         public event EventHandler auftragEvent;        
         public List<Auftrag> aufträge = new List<Auftrag>();
+        public List<(int, int, OrientiertesTeil, string)> TeilQueue = new List<(int, int, OrientiertesTeil, string)>();
 
 
         void onInsertEvent(int x, int y, OrientiertesTeil ot)
@@ -79,126 +82,74 @@ namespace PuzzleBauenClient
             onLog("Auftragsmanager gestartet");
         }
 
-        static int coo = 0;
+        //static int coo = 0;
         public void erteileAuftrag()
         {
             if (aufträge.Count>0)
             {
-                onLog("Erteile richtigen Auftrag");
-                Auftrag a = aufträge[0];
-                a.getScanBild().ImWrite(PathProvider.getWWWPath() + "\\bild1" + coo.ToString() + ".png");
-                a.getPuzzleBild().ImWrite(PathProvider.getWWWPath() + "\\bild2" + coo.ToString() + ".png");
-                listener.SendAll("load_image:1:/bild1" + coo.ToString() + ".png");
-                listener.SendAll("load_image:2:/bild2" + coo.ToString() + ".png");
-                listener.SendAll("send_meta:" + a.X.ToString() + ":" + a.Y.ToString() + ":" + a.Teil.TeilNummer.ToString() + ":" + a.Teil.PuzzleTeil.scan.id);
+
+                string uuid = getImageUuid();
+                onLog("erteile Auftrag");
+
+                Auftrag auftrag = aufträge[0];
+                this.TeilQueue.Add((auftrag.X, auftrag.Y, auftrag.Teil, uuid));
+                aufträge.RemoveAt(0);
+
+                auftrag.getScanBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_0" + ".png");
+                auftrag.getPuzzleBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_1" + ".png");
+                //listener.SendAll("send_meta:" + auftrag.X.ToString() + ":" + auftrag.Y.ToString() + ":" + auftrag.Teil.TeilNummer.ToString() + ":" + auftrag.Teil.PuzzleTeil.scan.id);
+                listener.SendAll("assign:" + uuid);
             }
-            else
-            {
-                onLog("Erteile \"Nichts zu tun\" Auftrag");
-                Mat m = new Mat(100, 100, MatType.CV_8UC3, Scalar.Black);
-                m.PutText("nix", new OpenCvSharp.Point(0, 50), HersheyFonts.Italic, 2, Scalar.Red);
-                m.ImWrite(PathProvider.getWWWPath() + "\\bild1" + coo.ToString() + ".png");
-                m.ImWrite(PathProvider.getWWWPath() + "\\bild2" + coo.ToString() + ".png");
-                listener.SendAll("load_image:1:/bild1" + coo.ToString() + ".png");
-                listener.SendAll("load_image:2:/bild2" + coo.ToString() + ".png");
-                listener.SendAll("send_meta: -1:-1:-1:-1");
-            }
-            coo++;
+
         }
-        Auftrag getErstenPassendenAuftrag(int x, int y, int TeilId)
+
+        string getImageUuid()
         {
-            Auftrag ret = null;
-            foreach (Auftrag a in aufträge)
-            {
-                if ((a.X == x && a.Y == y) || TeilId == a.Teil.TeilNummer)
-                {
-                    ret = a;
-                    break;
-                }
-            }
-            return ret;
+            Guid uuid = Guid.NewGuid();
+            return uuid.ToString();
         }
+
+
         public void addAuftrag(int x, int y, OrientiertesTeil teil, Grid grid)
         {
-            bool autoInsert = false;
             Auftrag neu = new Auftrag(x, y, teil, grid);
             aufträge.Add(neu);
-            if (autoInsert)
-            {
-                successCallback(x, y, teil.TeilNummer);
 
-            }
             erteileAuftrag();
             onAuftragChanged();
         }
-        void loginCallback()
+
+        void successCallback()
         {
-            erteileAuftrag();
-        }
-        void successKill(Auftrag auftrag)
-        {
-            //Das Teil hat an die Position gepasst. Also können alle Aufträge an die Position
-            //und auch alle Aufträge mit diesem Teil gelöscht werden.
-            List<Auftrag> killList = new List<Auftrag>();
-            foreach (Auftrag a in aufträge)
+            if (this.TeilQueue.Count == 0) { return; }
+            (int, int, OrientiertesTeil, string) queue = this.TeilQueue.First();
+            this.TeilQueue.RemoveAt(0);
+            onInsertEvent(queue.Item1, queue.Item2, queue.Item3);
+
+            List<string> files = new List<string>();
+            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_0" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_1" + ".png");
+            foreach (string path in files)
             {
-                if ((a.X == auftrag.X && a.Y == auftrag.Y) || auftrag.Teil.TeilNummer == a.Teil.TeilNummer)
-                {
-                    killList.Add(a);
-                }
-            }
-            foreach (Auftrag a in killList)
-            {
-                aufträge.Remove(a);
+                File.Delete(path);
             }
         }
-        void failedKill(Auftrag auftrag)
+
+        void failCallback()
         {
-            //Das Teil hat nicht an die Position gepasst. Also können alle Identischen Aufträge gelöscht werden.
-            List<Auftrag> killList = new List<Auftrag>();
-            foreach (Auftrag a in aufträge)
+            if (this.TeilQueue.Count == 0) { return; }
+            (int, int, OrientiertesTeil, string) queue = this.TeilQueue.First();
+            this.TeilQueue.RemoveAt(0);
+
+            List<string> files = new List<string>();
+            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_0" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_1" + ".png");
+            foreach (string path in files)
             {
-                if (a.X == auftrag.X && a.Y == auftrag.Y && auftrag.Teil.TeilNummer == a.Teil.TeilNummer)
-                {
-                    killList.Add(a);
-                }
-            }
-            foreach (Auftrag a in killList)
-            {
-                aufträge.Remove(a);
+                File.Delete(path);
             }
         }
-        void successCallback(int x, int y, int TeilID)
-        {
-            Auftrag a = getErstenPassendenAuftrag(x,y,TeilID);         
-            if(a!=null)
-            {
-                //a.grid.insert(a.X, a.Y, a.Teil);                             
-                onInsertEvent(x, y, a.Teil);
-                successKill(a);
-                //onLog("Teil eingefügt");
-            }
-            else
-            {
-                onLog("SuccessCallback: Auftrag gibts nicht");
-            }
-            erteileAuftrag();
-            onAuftragChanged();            
-        }
-        void failCallback(int x, int y, int TeilID)
-        {
-            Auftrag a = getErstenPassendenAuftrag(x, y, TeilID);
-            if(a!=null)
-            {
-                failedKill(a);
-            }
-            else
-            {
-                onLog("FailCallback: Auftrag gibts nicht");
-            }
-            erteileAuftrag();
-            onAuftragChanged();
-        }
+
         string WsHook(string msg)
         {
             string[] tokens = msg.Split(':');
@@ -216,7 +167,7 @@ namespace PuzzleBauenClient
                     onLog("wsHook-login, sockets " + listener.sockets.Count.ToString());
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        loginCallback(); 
+                        //loginCallback(); 
                     }));                    
                     break;
                 case "request_image":
@@ -228,25 +179,16 @@ namespace PuzzleBauenClient
                 case "success":
                     onLog("wsHook-success");
                     {
-                        int x = int.Parse(tokens[2]);
-                        int y = int.Parse(tokens[3]);
-                        int teilID = int.Parse(tokens[4]);
                         Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
-                            successCallback(x, y, teilID);
+                            successCallback();
                         }));
                     }
                     break;
                 case "fail":
                     onLog("wsHook-fail");
                     {
-                        int x = int.Parse(tokens[2]);
-                        int y = int.Parse(tokens[3]);
-                        int teilID = int.Parse(tokens[4]);
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            failCallback(x, y, teilID);
-                        }));                        
+                        failCallback();
                     }
                     break;
 

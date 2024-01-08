@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
     <title>Super Epic Puzzle!!!</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body style="font-family:monospace; font-size:20px">
-    <div id="imageControl">
-      <button onclick="success()">success()</button>
-      <button onclick="fail()">fail()</button>
-      <hr>
-      <p id="position">position: </p>
-      <canvas id="c1", class="canvas"></canvas>
-      <hr>
-      <canvas id="c2", class="canvas"></canvas>
+    <div class="container">
+      <div id="images">
+        <canvas id="c0", class="canvas"></canvas>
+        <hr>
+        <canvas id="c1", class="canvas"></canvas>
+      </div>
+      <div id="imageControl">
+        <div id="feedback">
+          <button id="success", onclick="success()">PASST</button>
+          <button id="fail", onclick="fail()">PASST NICHT</button>
+        </div>
+      </div>
     </div>
+    
   </body>
 </html>
 <script type="text/javascript" src="index.js"></script>
