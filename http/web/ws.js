@@ -33,9 +33,12 @@ socket.addEventListener("message", (event) => {
       }
 	    break;
     case "invalid_user":
-      document.body.style.display = 'none';
-      alert("Another user already logged in");
+      // document.body.style.display = 'none';
+      document.getElementById("container").style.display = 'none';
       socket.close();
+      
+      // alert("Another user already logged in");
+      custom_alert("Another user already logged in");
       break;
   }
 })

@@ -27,15 +27,16 @@ namespace PuzzleBauenClient
             //PathProvider.localPath = localRoot + "\\Daten\\client\\";
             PathProvider.httpPath = localRoot + "\\http";
 
-            //Directory.SetCurrentDirectory(PathProvider.httpPath);
-            //ProcessStartInfo psi = new ProcessStartInfo();
-            //psi.FileName = "http.exe";
-            //psi.RedirectStandardInput = true;
-            //psi.RedirectStandardOutput = false;
-            //psi.Arguments = "";
-            //psi.UseShellExecute = false;
-            //psi.CreateNoWindow = true;
-            //Process httpProc = Process.Start(psi);
+            Directory.SetCurrentDirectory(PathProvider.httpPath);
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "http.exe";
+            psi.RedirectStandardInput = true;
+            psi.RedirectStandardOutput = false;
+            psi.Arguments = "";
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = false;
+            Process httpProc = Process.Start(psi);
+
             Directory.SetCurrentDirectory(currentDirectory.ToString());
 
 

@@ -96,8 +96,8 @@ namespace PuzzleBauenClient
                 this.TeilQueue.Add((auftrag.X, auftrag.Y, auftrag.Teil, uuid));
                 aufträge.RemoveAt(0);
 
-                auftrag.getScanBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_0" + ".png");
-                auftrag.getPuzzleBild().ImWrite(PathProvider.getWWWPath() + "\\" + uuid + "_1" + ".png");
+                auftrag.getScanBild().ImWrite(PathProvider.getWWWPath() + "\\images\\" + uuid + "_0" + ".png");
+                auftrag.getPuzzleBild().ImWrite(PathProvider.getWWWPath() + "\\images\\" + uuid + "_1" + ".png");
                 //listener.SendAll("send_meta:" + auftrag.X.ToString() + ":" + auftrag.Y.ToString() + ":" + auftrag.Teil.TeilNummer.ToString() + ":" + auftrag.Teil.PuzzleTeil.scan.id);
                 listener.SendAll("assign:" + uuid + ":" + auftrag.Teil.PuzzleTeil.scan.id);
             }
@@ -128,8 +128,8 @@ namespace PuzzleBauenClient
             onInsertEvent(queue.Item1, queue.Item2, queue.Item3);
 
             List<string> files = new List<string>();
-            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_0" + ".png");
-            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_1" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\images\\" + queue.Item4 + "_0" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\images\\" + queue.Item4 + "_1" + ".png");
             foreach (string path in files)
             {
                 File.Delete(path);
@@ -143,8 +143,8 @@ namespace PuzzleBauenClient
             this.TeilQueue.RemoveAt(0);
 
             List<string> files = new List<string>();
-            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_0" + ".png");
-            files.Add(PathProvider.getWWWPath() + "\\" + queue.Item4 + "_1" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\images\\" + queue.Item4 + "_0" + ".png");
+            files.Add(PathProvider.getWWWPath() + "\\images\\" + queue.Item4 + "_1" + ".png");
             foreach (string path in files)
             {
                 File.Delete(path);

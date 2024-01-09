@@ -19,7 +19,8 @@ function switch_image() {
 function load_next() {
   if (Orders.length == 0) {
     NO_NEW_ORDER = true;
-    alert("Keine neuen Aufträge");
+    // alert("Keine neuen Aufträge");
+    clear_canvas();
     return;
   }
   if (Orders.length >= 1) {
@@ -29,8 +30,8 @@ function load_next() {
   let order = Orders.shift();
   let uuid = order[0];
   let scan_id = order[1];
-  let image0 = "/" + uuid + "_0" + ".png";
-  let image1 = "/" + uuid + "_1" + ".png";
+  let image0 = "/images/" + uuid + "_0" + ".png";
+  let image1 = "/images/" + uuid + "_1" + ".png";
 
   document.getElementById("scan").innerText = "SCAN: " + scan_id;
 
@@ -51,4 +52,9 @@ function load_next() {
     ctx1.drawImage(img1, 0, 0);
   }
   img1.src = "http://" + HOST_ADDRESS + image1;
+}
+
+function clear_canvas() {
+  ctx0.clearRect(0, 0, c0.width, c0.height);
+  ctx1.clearRect(0, 0, c1.width, c1.height);
 }
